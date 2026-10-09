@@ -1,6 +1,6 @@
 # T5B1 saved Meiju DIY programs
 
-Version `26.9.4-b0-t5b1.3` builds on the BF mode-selection fix.
+Version `26.9.4-b0-t5b1.4` builds on the BF mode-selection fix.
 
 For model T5B1 / SN8 700XG241 with an existing Meiju account, the integration
 imports the official app's saved DIY list at startup. It adds three entities:
@@ -54,6 +54,17 @@ auto-next flag, menu ID, length, and checksum. No live cooking cycle was run.
 
 Keep a backup of the installed integration. Restart Home Assistant after updating
 Python files. An upstream HACS update may overwrite this custom build.
+
+## HACS source
+
+Add `https://github.com/forrestsocool/midea_smart_home` as a custom Integration
+repository in HACS and use its published `v26.9.4-b0-t5b1.4` release (or a newer
+custom release). Remove the downloaded upstream HACS entry when switching
+sources. The existing HA integration config and entity IDs are retained.
+
+This fork's built-in update checker and installer now use only releases from
+`forrestsocool/midea_smart_home`. Release ZIP assets contain the same integration
+files as the tagged source used by HACS.
 
 ## Current temperature
 
