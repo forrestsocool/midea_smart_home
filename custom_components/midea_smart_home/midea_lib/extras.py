@@ -391,10 +391,13 @@ class DeviceLogicHandler:
                 control["bucket"] = "db"
                 if "db_location" not in control and current_data and "db_location" in current_data:
                     control["db_location"] = current_data["db_location"]
-        if self.device_type == 0x9B:
+        if self.device_type in (0x9B, 0xBF):
             # Cooking parameters are only bundled with a cooking-start
             # command (work_mode); lock and work_status controls must stay
             # single-purpose and must not carry them.
+            # BF mode selects use set_attributes, unlike number controls.
+            # Include the configured temperature/time here as well, otherwise
+            # the Lua codec encodes omitted cooking parameters as 0xFF.
             if "work_mode" in control and centralized:
                 now = time.time()
                 for key in centralized:
