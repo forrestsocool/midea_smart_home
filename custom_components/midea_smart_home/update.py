@@ -34,8 +34,8 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
-GITHUB_API_URL = "https://api.github.com/repos/Cyborg2017/midea_smart_home/releases"
-GITHUB_RELEASE_URL = "https://github.com/Cyborg2017/midea_smart_home/releases/tag"
+GITHUB_API_URL = "https://api.github.com/repos/forrestsocool/midea_smart_home/releases"
+GITHUB_RELEASE_URL = "https://github.com/forrestsocool/midea_smart_home/releases/tag"
 DOWNLOAD_TIMEOUT = 300  # 5 minutes per attempt
 MAX_RETRIES = 3
 RETRY_DELAY = 5  # seconds between retries

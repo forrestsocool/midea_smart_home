@@ -263,6 +263,12 @@
       },
       "stop": {
         "name": "Stop"
+      },
+      "diy_refresh": {
+        "name": "Sync DIY programs"
+      },
+      "diy_start": {
+        "name": "Start DIY program"
       }
     },
     "climate": {
@@ -2121,6 +2127,9 @@
           "standby": "Standby",
           "work": "Work"
         }
+      },
+      "diy_program": {
+        "name": "DIY program"
       }
     },
     "sensor": {

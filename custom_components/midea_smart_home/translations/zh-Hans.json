@@ -263,6 +263,12 @@
       },
       "stop": {
         "name": "停止"
+      },
+      "diy_refresh": {
+        "name": "同步 DIY 程序"
+      },
+      "diy_start": {
+        "name": "启动 DIY 程序"
       }
     },
     "climate": {
@@ -2121,6 +2127,9 @@
           "standby": "待机",
           "work": "工作"
         }
+      },
+      "diy_program": {
+        "name": "DIY 程序"
       }
     },
     "sensor": {

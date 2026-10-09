@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from custom_components.midea_smart_home.device_mapping._common import *
 
 DEVICE_MAPPING = {
@@ -340,3 +342,9 @@ DEVICE_MAPPING = {
         }
     }
 }
+
+# The T5B1 Lua codec reports only upper/lower temperature channels. The official
+# plugin also uses the upper channel for cavity-temperature feedback. Keep the
+# existing entity ID but read that measured field, never the target temperature.
+DEVICE_MAPPING[("t5b1", "700XG241")] = deepcopy(DEVICE_MAPPING["default_microwave_steam_oven"])
+DEVICE_MAPPING[("t5b1", "700XG241")]["entities"][Platform.SENSOR]["cur_temperature"]["status_key"] = "cur_temperature_above"
