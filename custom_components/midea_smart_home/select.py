@@ -25,6 +25,11 @@ async def async_setup_entry(
         entities_config = device_mapping.get("entities", {})
         select_config = entities_config.get(Platform.SELECT, {})
 
+        if coordinator.diy_programs is not None:
+            entities.append(MideaDiyProgramSelect(
+                coordinator, device_id, device_type, sn, sn8, device_name, model,
+            ))
+
         if select_config:
             for select_id, config in select_config.items():
                 options = config.get("options", {})
@@ -46,6 +51,43 @@ async def async_setup_entry(
                 )
 
     async_add_entities(entities)
+
+
+class MideaDiyProgramSelect(MideaBaseEntity, SelectEntity):
+    """Choose an imported program locally; selection never starts the appliance."""
+
+    _attr_icon = "mdi:book-open-variant"
+
+    def __init__(self, coordinator, device_id, device_type, sn, sn8, device_name, model):
+        super().__init__(coordinator, device_id, device_type, sn, sn8, device_name,
+                         "diy_program", model, platform_name="select")
+        self.programs = coordinator.diy_programs
+
+    @property
+    def available(self):
+        return bool(self.programs.programs)
+
+    @property
+    def options(self):
+        return self.programs.options
+
+    @property
+    def current_option(self):
+        return self.programs.current_option
+
+    @property
+    def extra_state_attributes(self):
+        selected = self.programs.selected or {}
+        status = self.coordinator.data or {}
+        return {
+            "program_id": selected.get("id"), "stages": selected.get("stages"),
+            "supported": selected.get("supported"), "unsupported_reason": selected.get("unsupported_reason"),
+            "last_sync": self.programs.last_sync, "last_sync_error": self.programs.last_error,
+            "current_step": status.get("stepnum"), "total_steps": status.get("totalstep"),
+        }
+
+    async def async_select_option(self, option):
+        await self.programs.async_select(option)
 
 
 class MideaSelectEntity(MideaBaseEntity, SelectEntity):

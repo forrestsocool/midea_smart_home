@@ -83,6 +83,7 @@ class MideaCloud:
         endpoint: str,
         data: dict[str, Any],
         header: dict[str, Any] | None = None,
+        success_codes: tuple[int, ...] = (0,),
     ) -> dict | None:
         header = header or {}
         if not data.get("reqId"):
@@ -123,7 +124,7 @@ class MideaCloud:
                     break
             except (TimeoutError, ClientConnectionError, json.JSONDecodeError) as e:
                 _LOGGER.warning("Midea cloud API error, url: %s, error: %s", url, repr(e))
-        if int(response["code"]) == 0 and "data" in response:
+        if int(response["code"]) in success_codes and "data" in response:
             return cast(dict, response["data"])
         return None
 
@@ -170,6 +171,14 @@ class MideaCloud:
 
 class MeijuCloud(MideaCloud):
     """Meiju Cloud."""
+
+    async def list_diy_programs(self, appliance_id: int, sn8: str, cbs_version: str = "") -> dict | None:
+        """Read the same saved DIY list used by the official appliance plugin."""
+        return await self._api_request(
+            endpoint="/cloud-menu/midea/menu/dev/diymode/get/new",
+            data={"userId": self._uid, "deviceId": str(appliance_id), "sn8": sn8, "cbsVersion": cbs_version},
+            success_codes=(0, 200),
+        )
 
     def __init__(
         self,

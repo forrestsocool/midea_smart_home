@@ -288,6 +288,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             device_id = result[CONF_DEVICE_ID]
             hass.data[DOMAIN][entry.entry_id][str(device_id)] = result
 
+            # Native multi-stage support has been verified for this T5B1 codec.
+            if (
+                result.get(CONF_SN8) == "700XG241"
+                and result.get(CONF_PRODUCT_MODEL) == "T5B1"
+                and entry.data.get("account") and entry.data.get("password")
+            ):
+                from .diy import MideaDiyPrograms
+                coordinator = result["coordinator"]
+                coordinator.diy_programs = MideaDiyPrograms(
+                    hass, entry, coordinator, device_id, result[CONF_SN8],
+                )
+                await coordinator.diy_programs.async_initialize()
+
     try:
         await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     except (ValueError, KeyError, OSError) as e:

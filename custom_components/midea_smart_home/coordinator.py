@@ -129,6 +129,7 @@ class MideaCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self._was_available: bool | None = None
         self._initialized: bool = False
         self._active: bool = True
+        self.diy_programs = None
 
         super().__init__(
             hass,
