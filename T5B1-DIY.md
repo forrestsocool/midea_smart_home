@@ -1,6 +1,6 @@
 # T5B1 saved Meiju DIY programs
 
-Version `26.9.4-b0-t5b1.2` builds on the BF mode-selection fix.
+Version `26.9.4-b0-t5b1.3` builds on the BF mode-selection fix.
 
 For model T5B1 / SN8 700XG241 with an existing Meiju account, the integration
 imports the official app's saved DIY list at startup. It adds three entities:
@@ -54,3 +54,13 @@ auto-next flag, menu ID, length, and checksum. No live cooking cycle was run.
 
 Keep a backup of the installed integration. Restart Home Assistant after updating
 Python files. An upstream HACS update may overwrite this custom build.
+
+## Current temperature
+
+The 700XG241 Lua codec reports `cur_temperature_above` and
+`cur_temperature_underside`, but no separate `cur_temperature`. The T5B1-specific
+mapping now reads the upper measured channel for the existing Current temperature
+entity, matching the official plugin's cavity-temperature feedback source. Its
+`source_attribute` identifies the source. The setpoint is never substituted and
+readings above the setpoint are not clamped; missing readings remain unknown.
+Other BF models retain their existing mapping and the entity ID is unchanged.

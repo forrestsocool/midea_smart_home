@@ -41,7 +41,7 @@ async def async_setup_entry(
                     MideaSensorEntity(
                         coordinator, device_id, device_type, sn, sn8, device_name,
                         sensor_id, name, device_class, unit, translation_key, state_class, model,
-                        suggested_display_precision, options
+                        suggested_display_precision, options, config.get("status_key")
                     )
                 )
 
@@ -81,6 +81,7 @@ class MideaSensorEntity(MideaBaseEntity, SensorEntity):
         model: str = None,
         suggested_display_precision: Optional[int] = None,
         options: Optional[list] = None,
+        status_key: str | list[str] | None = None,
     ):
         config = {"translation_key": translation_key} if translation_key else {}
         super().__init__(
@@ -88,6 +89,7 @@ class MideaSensorEntity(MideaBaseEntity, SensorEntity):
             platform_name="sensor", config=config
         )
         self._sensor_id = sensor_id
+        self._status_key = status_key or sensor_id
 
         if options is not None:
             self._attr_options = options
@@ -126,13 +128,18 @@ class MideaSensorEntity(MideaBaseEntity, SensorEntity):
         if not self.available:
             return None
 
-        data = self.coordinator.data or {}
-        value = data.get(self._sensor_id)
+        value = self._get_nested_value(self._status_key)
 
         if value is None or value == "":
             return None
 
         return value
+
+    @property
+    def extra_state_attributes(self) -> dict | None:
+        if self._status_key != self._sensor_id:
+            return {"source_attribute": self._status_key}
+        return None
 
 
 class MideaLanIPEntity(MideaBaseEntity, SensorEntity):
